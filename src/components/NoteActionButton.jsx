@@ -4,7 +4,7 @@ const VARIANTS = {
   delete: {
     className: 'note-item__delete-button',
     testId: 'note-item-delete-button',
-    label: 'Hapus',
+    label: 'Delete',
   },
   archive: {
     className: 'note-item__archive-button',
@@ -18,10 +18,10 @@ function NoteActionButton({ variant, onClick, children }) {
 
   return (
     <button
-      type="button"
       className={config.className}
-      data-testid={config.testId}
+      type="button"
       onClick={onClick}
+      data-testid={config.testId}
     >
       {children || config.label}
     </button>

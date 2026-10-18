@@ -10,31 +10,31 @@ class NoteInput extends React.Component {
     this.state = {
       title: '',
       body: '',
-      error: '',
+      error: ''
     };
 
-    this.onTitleChangeHandler = this.onTitleChangeHandler.bind(this);
-    this.onBodyChangeHandler = this.onBodyChangeHandler.bind(this);
-    this.onSubmitHandler = this.onSubmitHandler.bind(this);
+    this.onTitleChangeEventHandler = this.onTitleChangeEventHandler.bind(this);
+    this.onBodyChangeEventHandler = this.onBodyChangeEventHandler.bind(this);
+    this.onSubmitEventHandler = this.onSubmitEventHandler.bind(this);
   }
 
-  onTitleChangeHandler(event) {
+  onTitleChangeEventHandler(event) {
     const title = event.target.value.slice(0, TITLE_LIMIT);
     this.setState({ title });
   }
 
-  onBodyChangeHandler(event) {
+  onBodyChangeEventHandler(event) {
     this.setState({ body: event.target.value, error: '' });
   }
 
-  onSubmitHandler(event) {
+  onSubmitEventHandler(event) {
     event.preventDefault();
 
     const { title, body } = this.state;
 
     if (body.trim().length < BODY_MIN_LENGTH) {
       this.setState({
-        error: `Isi catatan minimal ${BODY_MIN_LENGTH} karakter.`,
+        error: `Isi catatan minimal ${BODY_MIN_LENGTH} karakter.`
       });
       return;
     }
@@ -44,47 +44,44 @@ class NoteInput extends React.Component {
   }
 
   render() {
-    const { title, body, error } = this.state;
-    const remaining = TITLE_LIMIT - title.length;
+    const remainingChars = TITLE_LIMIT - this.state.title.length;
 
     return (
       <div className="note-input" data-testid="note-input">
         <h2>Buat catatan</h2>
+
+        {this.state.error && (
+          <p className="note-input__feedback--error">{this.state.error}</p>
+        )}
+
         <form
-          onSubmit={this.onSubmitHandler}
+          onSubmit={this.onSubmitEventHandler}
           data-testid="note-input-form"
         >
-          <p className="note-input__title__char-limit-wrapper">
-            <span
-              className="note-input__title__char-limit"
-              data-testid="note-input-title-remaining"
-            >
-              {remaining} karakter tersisa
-            </span>
+          <p
+            className="note-input__title__char-limit"
+            style={remainingChars < 10 ? { color: 'red' } : undefined}
+            data-testid="note-input-title-remaining"
+          >
+            Sisa karakter: {remainingChars}
           </p>
           <input
             className="note-input__title"
             type="text"
             placeholder="Ini adalah judul ..."
-            value={title}
-            onChange={this.onTitleChangeHandler}
+            value={this.state.title}
+            onChange={this.onTitleChangeEventHandler}
+            required
             data-testid="note-input-title-field"
           />
           <textarea
             className="note-input__body"
             placeholder="Tuliskan catatanmu di sini ..."
-            value={body}
-            onChange={this.onBodyChangeHandler}
+            value={this.state.body}
+            onChange={this.onBodyChangeEventHandler}
+            required
             data-testid="note-input-body-field"
           />
-          {error && (
-            <p
-              className="note-input__feedback--error"
-              data-testid="note-input-feedback-error"
-            >
-              {error}
-            </p>
-          )}
           <button type="submit" data-testid="note-input-submit-button">
             Buat
           </button>

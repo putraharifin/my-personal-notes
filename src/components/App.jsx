@@ -4,7 +4,7 @@ import NoteInput from './NoteInput';
 import NoteSearch from './NoteSearch';
 import NotesList from './NotesList';
 
-const byNewest = (a, b) => new Date(b.createdAt) - new Date(a.createdAt);
+const sortByNewest = (a, b) => new Date(b.createdAt) - new Date(a.createdAt);
 
 class App extends React.Component {
   constructor(props) {
@@ -12,6 +12,7 @@ class App extends React.Component {
 
     this.state = {
       notes: getInitialData(),
+
       searchKeyword: '',
     };
 
@@ -64,10 +65,10 @@ class App extends React.Component {
     ));
     const activeNotes = filteredNotes
       .filter((note) => !note.archived)
-      .sort(byNewest);
+      .sort(sortByNewest);
     const archivedNotes = filteredNotes
       .filter((note) => note.archived)
-      .sort(byNewest);
+      .sort(sortByNewest);
 
     return (
       <div className="note-app" data-testid="note-app">
@@ -77,26 +78,32 @@ class App extends React.Component {
         </div>
         <div className="note-app__body" data-testid="note-app-body">
           <NoteInput addNote={this.onAddNoteHandler} />
-          
-          <h2>Catatan Aktif</h2>
-          <NotesList
-            notes={activeNotes}
-            keyword={searchKeyword}
-            onDelete={this.onDeleteHandler}
-            onArchive={this.onArchiveHandler}
-            dataTestId="active-notes-list"
-            emptyMessage="Tidak ada catatan"
-          />
-
-          <h2 data-testid="archived-notes-section">Arsip</h2>
-          <NotesList
-            notes={archivedNotes}
-            keyword={searchKeyword}
-            onDelete={this.onDeleteHandler}
-            onArchive={this.onArchiveHandler}
-            dataTestId="archived-notes-list"
-            emptyMessage="Arsip kosong"
-          />
+          <section
+            aria-labelledby="active-notes-title"
+            data-testid="active-notes-section"
+          >
+            <h2 id="active-notes-title">Catatan Aktif</h2>
+            <NotesList
+              notes={activeNotes}
+              onDelete={this.onDeleteHandler}
+              onArchive={this.onArchiveHandler}
+              searchKeyword={searchKeyword}
+              dataTestId="active-notes-list"
+            />
+          </section>
+          <section
+            aria-labelledby="archived-notes-title"
+            data-testid="archived-notes-section"
+          >
+            <h2 id="archived-notes-title">Arsip</h2>
+            <NotesList
+              notes={archivedNotes}
+              onDelete={this.onDeleteHandler}
+              onArchive={this.onArchiveHandler}
+              searchKeyword={searchKeyword}
+              dataTestId="archived-notes-list"
+            />
+          </section>
         </div>
       </div>
     );
